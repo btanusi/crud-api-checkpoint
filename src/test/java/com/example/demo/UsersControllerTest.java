@@ -33,9 +33,15 @@ public class UsersControllerTest {
     public void testGetLesson() throws Exception {
         User user = new User();
         user.setId(1L);
-        user.setEmail("my@email.com");
-        user.setPassword("password");
+        user.setEmail("john@example.com");
+        user.setPassword("john");
         repository.save(user);
+
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setEmail("eliza@example.com");
+        user2.setPassword("eliza");
+        repository.save(user2);
 
         MockHttpServletRequestBuilder request = get("/users")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -43,8 +49,9 @@ public class UsersControllerTest {
         this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", equalTo(1) ))
-                .andExpect(jsonPath("$[0].email", equalTo("my@email.com") ))
-                .andExpect(jsonPath("$[0].password", equalTo("password") ))
+                .andExpect(jsonPath("$[0].email", equalTo("john@example.com") ))
+                .andExpect(jsonPath("$[1].id", equalTo(2) ))
+                .andExpect(jsonPath("$[1].email", equalTo("eliza@example.com") ))
         ;
     }
     /*
