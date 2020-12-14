@@ -31,6 +31,11 @@ public class UsersController {
     public User create(@RequestBody User user) {
         return this.repository.save(user);
     }
+
+    @GetMapping("/{id}")
+    public Optional<User> specific(@PathVariable Long id) {
+        return this.repository.findById(id);
+    }
     /*
     @GetMapping("/find/{title}")
     public Lesson findTitle(@PathVariable String title) {

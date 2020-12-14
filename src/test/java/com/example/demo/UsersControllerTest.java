@@ -38,8 +38,8 @@ public class UsersControllerTest {
     public void testGetLesson() throws Exception {
         User user = new User();
         user.setId(1L);
-        user.setEmail("john@example.com");
-        user.setPassword("john");
+        user.setEmail("bob@example.com");
+        user.setPassword("bob");
         repository.save(user);
 
         User user2 = new User();
@@ -54,7 +54,7 @@ public class UsersControllerTest {
         this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", equalTo(1) ))
-                .andExpect(jsonPath("$[0].email", equalTo("john@example.com") ))
+                .andExpect(jsonPath("$[0].email", equalTo("bob@example.com") ))
                 .andExpect(jsonPath("$[1].id", equalTo(2) ))
                 .andExpect(jsonPath("$[1].email", equalTo("eliza@example.com") ))
         ;
@@ -72,6 +72,27 @@ public class UsersControllerTest {
         this.mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(3)))
+                .andExpect(jsonPath("$.email", equalTo("john@example.com") ))
+        ;
+    }
+
+    @Test
+    @Order(3)
+    @Transactional
+    @Rollback
+    public void testGetUserById() throws Exception {
+        User user = new User();
+        user.setId(4L);
+        user.setEmail("john@example.com");
+        user.setPassword("john");
+        repository.save(user);
+
+        MockHttpServletRequestBuilder request = get("/users/4")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(4)))
                 .andExpect(jsonPath("$.email", equalTo("john@example.com") ))
         ;
     }
