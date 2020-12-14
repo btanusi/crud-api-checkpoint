@@ -1,6 +1,9 @@
 package com.example.demo;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UsersControllerTest {
@@ -28,6 +32,7 @@ public class UsersControllerTest {
     UserRepository repository;
 
     @Test
+    @Order(1)
     @Transactional
     @Rollback
     public void testGetLesson() throws Exception {
@@ -52,6 +57,22 @@ public class UsersControllerTest {
                 .andExpect(jsonPath("$[0].email", equalTo("john@example.com") ))
                 .andExpect(jsonPath("$[1].id", equalTo(2) ))
                 .andExpect(jsonPath("$[1].email", equalTo("eliza@example.com") ))
+        ;
+    }
+
+    @Test
+    @Order(2)
+    @Transactional
+    @Rollback
+    public void testCreateLesson() throws Exception {
+        MockHttpServletRequestBuilder request = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \"john@example.com\",\"password\": \"something-secret\"}");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(3)))
+                .andExpect(jsonPath("$.email", equalTo("john@example.com") ))
         ;
     }
     /*

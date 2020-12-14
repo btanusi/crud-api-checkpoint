@@ -27,6 +27,10 @@ public class UsersController {
         return this.repository.findAll();
     }
 
+    @PostMapping("")
+    public User create(@RequestBody User user) {
+        return this.repository.save(user);
+    }
     /*
     @GetMapping("/find/{title}")
     public Lesson findTitle(@PathVariable String title) {
