@@ -96,6 +96,76 @@ public class UsersControllerTest {
                 .andExpect(jsonPath("$.email", equalTo("john@example.com") ))
         ;
     }
+
+    @Test
+    @Order(4)
+    @Transactional
+    @Rollback
+    public void testPatchUserWithPassword() throws Exception {
+        User user = new User();
+        user.setId(5L);
+        user.setEmail("eliza@example.com");
+        user.setPassword("eliza");
+        repository.save(user);
+
+        MockHttpServletRequestBuilder request = patch("/users/5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \"john@example.com\",\"password\": \"1234\"}");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(5) ))
+                .andExpect(jsonPath("$.email", equalTo("john@example.com") ));
+    }
+
+    @Test
+    @Order(5)
+    @Transactional
+    @Rollback
+    public void testPatchUser() throws Exception {
+        User user = new User();
+        user.setId(6L);
+        user.setEmail("eliza@example.com");
+        user.setPassword("eliza");
+        repository.save(user);
+
+        MockHttpServletRequestBuilder request = patch("/users/6")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\": \"john@example.com\"}");
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(6) ))
+                .andExpect(jsonPath("$.email", equalTo("john@example.com") ));
+    }
+
+    @Test
+    @Order(6)
+    @Transactional
+    @Rollback
+    public void testDeleteUserById() throws Exception {
+        User user = new User();
+        user.setId(7L);
+        user.setEmail("eliza@example.com");
+        user.setPassword("eliza");
+        repository.save(user);
+
+        User user2 = new User();
+        user2.setId(8L);
+        user2.setEmail("eliza@example.com");
+        user2.setPassword("eliza");
+        repository.save(user2);
+
+        MockHttpServletRequestBuilder request = delete("/users/7")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        this.mvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.count", equalTo(1) ))
+        ;
+    }
+
+
     /*
     @Test
     @Transactional

@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @SpringBootApplication
 @RestController
@@ -36,6 +34,28 @@ public class UsersController {
     public Optional<User> specific(@PathVariable Long id) {
         return this.repository.findById(id);
     }
+
+    @PatchMapping("/{id}")
+    public User update(@PathVariable Long id, @RequestBody User user){
+        User toUpdate = this.repository.findById(id).get();
+        toUpdate.setEmail(user.getEmail());
+        toUpdate.setPassword(user.getPassword());
+        return this.repository.save(toUpdate);
+    }
+
+    @DeleteMapping("/{id}")
+    public Map<String, Integer> delete(@PathVariable Long id) {
+        this.repository.deleteById(id);
+        int counter = 0;
+        for (Object i : this.repository.findAll()) {
+            counter++;
+        }
+        Map<String, Integer> count = new HashMap<String, Integer>();
+        count.put("count", counter);
+        return count;
+    }
+
+
     /*
     @GetMapping("/find/{title}")
     public Lesson findTitle(@PathVariable String title) {
